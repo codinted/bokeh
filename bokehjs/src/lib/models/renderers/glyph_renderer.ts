@@ -405,10 +405,6 @@ export class GlyphRenderer extends DataRenderer {
       muted_glyph:        [ p.Instance           ],
       muted:              [ p.Bool,     false    ],
     })
-
-    this.override({
-      level: 'glyph',
-    })
   }
 
   initialize(): void {
