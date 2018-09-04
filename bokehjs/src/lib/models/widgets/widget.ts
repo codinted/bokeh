@@ -1,6 +1,6 @@
 import {LayoutDOM, LayoutDOMView} from "../layouts/layout_dom"
 import {SizeHint, Layoutable} from "core/layout"
-import {border, margin, div} from "core/dom"
+import {border, margin} from "core/dom"
 
 export class DOMLayout extends Layoutable {
 
@@ -9,20 +9,35 @@ export class DOMLayout extends Layoutable {
   }
 
   size_hint(): SizeHint {
-    const borders = border(this.el)
-    const margins = margin(this.el)
-
     let width: number
     if (this.sizing.width_policy == "fixed")
       width = this.sizing.width
-    else
-      width = this.el.scrollWidth + margins.left + margins.right + borders.left + borders.right
+    else if (this.sizing.width_policy == "auto" && this.sizing.width != null)
+      width = this.sizing.width
+    else {
+      width = 0
+      for (const child of Array.from(this.el.children) as HTMLElement[]) {
+        const borders = border(child)
+        const margins = margin(child)
+        width += child.scrollWidth + margins.left + margins.right
+                                   + borders.left + borders.right
+      }
+    }
 
     let height: number
     if (this.sizing.height_policy == "fixed")
       height = this.sizing.height
-    else
-      height = this.el.scrollHeight + margins.top + margins.bottom + borders.top + borders.bottom
+    else if (this.sizing.height_policy == "auto" && this.sizing.height != null)
+      height = this.sizing.height
+    else {
+      height = 0
+      for (const child of Array.from(this.el.children) as HTMLElement[]) {
+        const borders = border(child)
+        const margins = margin(child)
+        height += child.scrollHeight + margins.top + margins.bottom
+                                     + borders.top + borders.bottom
+      }
+    }
 
     return {width, height}
   }
@@ -31,21 +46,12 @@ export class DOMLayout extends Layoutable {
 export abstract class WidgetView extends LayoutDOMView {
   model: Widget
 
-  content_el: HTMLElement
-
-  protected _createElement(): HTMLElement {
-    const el = super._createElement()
-    this.content_el = div({style: {width: "100%"}})
-    el.appendChild(this.content_el)
-    return el
-  }
-
   get child_models(): LayoutDOM[] {
     return []
   }
 
   update_layout(): void {
-    this.layout = new DOMLayout(this.content_el)
+    this.layout = new DOMLayout(this.el)
     this.layout.sizing = this.box_sizing()
   }
 

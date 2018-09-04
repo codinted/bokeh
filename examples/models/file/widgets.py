@@ -126,7 +126,16 @@ widgets = Column(children=[
 ])
 
 doc = Document()
-doc.add_root(widgets)
+#doc.add_root(widgets)
+
+b1 = Button(label="Button 1", button_type="primary", width=300)
+b2 = Button(label="Button 2", button_type="primary")
+b3 = Button(label="Button 3", button_type="primary")
+b4 = Button(label="Button 4", button_type="primary")
+b5 = Button(label="Button 5", button_type="primary")
+b6 = Button(label="Button 6", button_type="primary")
+doc.add_root(Column(children=[b1, b2, b3, b4, b5, b6]))
+
 
 if __name__ == "__main__":
     doc.validate()

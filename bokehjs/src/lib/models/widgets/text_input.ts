@@ -23,8 +23,10 @@ export class TextInputView extends InputWidgetView {
 
     empty(this.el)
 
-    const labelEl = label({for: this.model.id}, this.model.title)
-    this.el.appendChild(labelEl)
+    if (this.model.title.length > 0) {
+      const labelEl = label({for: this.model.id}, this.model.title)
+      this.el.appendChild(labelEl)
+    }
 
     this.inputEl = input({
       type: "text",
